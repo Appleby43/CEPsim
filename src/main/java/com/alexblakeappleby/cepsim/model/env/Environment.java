@@ -7,7 +7,7 @@ public class Environment {
      * All environments are 'square', so size is the amount of Tiles on a given side.
      */
     public final int size;
-    public final int cellCount;
+    public final int tileCount;
 
     //tile is assembled as (y, x) to make construction more intuitive
     //when indexing, use getTile(x, y) for readability
@@ -15,7 +15,7 @@ public class Environment {
 
     public Environment(int size) {
         this.size = size;
-        cellCount = size * size;
+        tileCount = size * size;
 
         tiles = new Tile[size][size];
 

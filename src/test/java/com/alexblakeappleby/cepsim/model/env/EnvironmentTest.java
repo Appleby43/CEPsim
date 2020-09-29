@@ -13,7 +13,7 @@ public class EnvironmentTest {
     public void test1CellEnv() {
         Environment e = new Environment(1);
 
-        assertEquals(1, e.cellCount);
+        assertEquals(1, e.tileCount);
 
         Tile t = e.getTile(0,0);
 
@@ -24,7 +24,7 @@ public class EnvironmentTest {
     public void test9CellEnv() {
         Environment e = new Environment(3);
 
-        assertEquals(9, e.cellCount);
+        assertEquals(9, e.tileCount);
 
         Tile middleTile = e.getTile(1,1);
 

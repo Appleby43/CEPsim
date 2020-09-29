@@ -15,7 +15,7 @@ public class Tile {
     private Organism inhabitant = null;
     private Set<Tile> neighbors = new HashSet<>();
 
-    private int x, y;
+    public final int x, y;
 
     public enum State {
         FREE,
