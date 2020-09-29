@@ -1,5 +1,9 @@
 package com.alexblakeappleby.cepsim.model.env;
 
+import com.alexblakeappleby.cepsim.model.species.Species;
+
+import java.util.*;
+
 public class Environment {
 
     /**
@@ -11,7 +15,7 @@ public class Environment {
 
     //tile is assembled as (y, x) to make construction more intuitive
     //when indexing, use getTile(x, y) for readability
-    private Tile[][] tiles;
+    private final Tile[][] tiles;
 
     public Environment(int size) {
         this.size = size;
@@ -43,6 +47,36 @@ public class Environment {
                 if(x != 0){
                     makeNeighborPair(t, getTile(x - 1, y));
                 }
+            }
+        }
+    }
+
+    /**
+     * Populates the environment with a random distribution of species
+     * 50 percent of the grid will be empty. The other 50 percent will be populated by
+     * an equal distribution of the specified species.
+     */
+    public void populateRandomly(Species... species){
+        int emptyTiles = (int) Math.ceil(tileCount / 2.0);
+        //integer division floors rounding, so emptyTiles may be larger than specified
+        int speciesPer = (tileCount - emptyTiles) / 2;
+
+        //create a list of all tiles
+        List<Tile> allTiles = new ArrayList<>();
+        for (Tile[] arr : tiles) {
+            allTiles.addAll(Arrays.asList(arr));
+        }
+
+        //shuffle the list of all tiles
+        Collections.shuffle(allTiles);
+
+        //index the shuffled array as many times as needed
+        int index = 0;
+        for (int i = 0; i < speciesPer; i++) {
+            for (Species s : species) {
+                Tile t = allTiles.get(index);
+                t.inhabit(s);
+                index++;
             }
         }
     }

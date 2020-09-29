@@ -9,5 +9,6 @@ public class Organism {
     public Organism(Species species, Tile habitat) {
         this.species = species;
         this.habitat = habitat;
+        species.addOrganism(this);
     }
 }

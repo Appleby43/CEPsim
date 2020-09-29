@@ -1,5 +1,6 @@
 package com.alexblakeappleby.cepsim.model.env;
 
+import com.alexblakeappleby.cepsim.model.species.Species;
 import org.junit.Test;
 
 import java.util.HashSet;
@@ -45,5 +46,18 @@ public class EnvironmentTest {
 
         Tile cornerTile2 = e.getTile(2,0);
         assertEquals(2, cornerTile2.getNeighbors().size());
+    }
+
+    @Test
+    public void testPopulateEnvironment() {
+        Environment environment = new Environment(10);
+        assertEquals(environment.tileCount, 100);
+
+        Species s1 = new Species(1), s2 = new Species(1);
+
+        environment.populateRandomly(s1, s2);
+
+        assertEquals(s1.populationCount(), 25);
+        assertEquals(s2.populationCount(), 25);
     }
 }

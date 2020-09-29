@@ -12,6 +12,8 @@ public class TileView extends Polygon {
     public TileView(Tile tile) {
         this.tile = tile;
 
+        tile.setUpdateEvent(() -> onUpdate());
+
         getPoints().addAll(//starts at 0 radians, goes CCW around 360 degrees
                 RADIUS * cos(PI / 6.0),  RADIUS * sin(PI / 6.0),
 
@@ -31,7 +33,11 @@ public class TileView extends Polygon {
         setOnMouseClicked(e -> {
             System.out.println(tile.x);
             System.out.println(tile.y);
-
         });
+    }
+
+    private void onUpdate(){
+        Color fillColor = ColorRegistry.getSpeciesColor(tile.getInhabitant().species.id);
+        setFill(fillColor);
     }
 }

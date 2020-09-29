@@ -1,8 +1,9 @@
 package com.alexblakeappleby.cepsim.model.env;
 
 import com.alexblakeappleby.cepsim.model.species.Organism;
+import com.alexblakeappleby.cepsim.model.species.Species;
+import com.alexblakeappleby.cepsim.util.UpdateEvent;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,6 +15,8 @@ public class Tile {
     private State state = State.FREE;
     private Organism inhabitant = null;
     private Set<Tile> neighbors = new HashSet<>();
+
+    private UpdateEvent updateEvent;
 
     public final int x, y;
 
@@ -36,6 +39,26 @@ public class Tile {
         neighbors.add(neighbor);
     }
 
+    public void inhabit(Species species){
+        inhabitant = new Organism(species, this);
+        state = State.OCCUPIED;
+        update();
+    }
+
+    public Organism getInhabitant(){
+        return inhabitant;
+    }
+
+    public void setUpdateEvent(UpdateEvent updateEvent){
+        this.updateEvent = updateEvent;
+    }
+
+    private void update(){
+        if(updateEvent != null){
+            updateEvent.onUpdate();
+        }
+    }
+
     public Set<Tile> getNeighbors (){
         return neighbors;
     }
@@ -43,4 +66,5 @@ public class Tile {
     public boolean isInhabited(){
         return (inhabitant != null);
     }
+
 }

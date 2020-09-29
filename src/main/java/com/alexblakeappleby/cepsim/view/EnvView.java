@@ -4,8 +4,11 @@ import com.alexblakeappleby.cepsim.model.env.Environment;
 import com.alexblakeappleby.cepsim.model.env.Tile;
 import javafx.scene.Group;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
+/**
+ * View for Environment
+ * @see Environment
+ */
 public class EnvView extends Group {
     private static final int SPACING = 3;
     private Environment environment;
