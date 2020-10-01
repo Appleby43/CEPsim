@@ -10,7 +10,7 @@ public class Species {
      * int identifier for each species
      */
     public final int id;
-    private final double strength;
+    public final double strength;
     private List<Organism> organisms = new ArrayList<>();
 
     /**
@@ -24,6 +24,18 @@ public class Species {
 
     public int populationCount(){
         return organisms.size();
+    }
+
+    public static List<Species> getSpecies(){
+        return species;
+    }
+
+    public List<Organism> getOrganisms(){
+        return organisms;
+    }
+
+    public void progress(){
+        organisms.clear();
     }
 
     void addOrganism(Organism organism){

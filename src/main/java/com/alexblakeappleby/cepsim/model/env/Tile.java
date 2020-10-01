@@ -3,9 +3,9 @@ package com.alexblakeappleby.cepsim.model.env;
 import com.alexblakeappleby.cepsim.model.species.Organism;
 import com.alexblakeappleby.cepsim.model.species.Species;
 import com.alexblakeappleby.cepsim.util.UpdateEvent;
+import com.alexblakeappleby.cepsim.util.Util;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A tile is one 'microhabitat' that makes up a larger environment.
@@ -17,6 +17,7 @@ public class Tile {
     private Set<Tile> neighbors = new HashSet<>();
 
     private UpdateEvent updateEvent;
+    private List<Species> contestingSpecies = new ArrayList<>();
 
     public final int x, y;
 
@@ -45,8 +46,68 @@ public class Tile {
         update();
     }
 
+    private void uninhabit(State state){
+        this.state = state;
+        inhabitant = null;
+        update();
+    }
+
+    public void contest(Organism o){
+        contestingSpecies.add(o.species);
+    }
+
+    /**
+     * Called when time progresses one unit.
+     * contestingSpecies should be populated upon invokation.
+     */
+    public void progress() {
+        switch (state){
+            case FREE, REGENERATING -> {
+                if(contestingSpecies.size() == 0) {
+                    uninhabit(State.FREE);
+                    break;
+                }
+
+                /*
+                If the tile is free or regenerating, it is eligible to be occupied next time unit.
+                Determine the species that occupies this microhabitat.
+                The odds of a given species occupying a microhabitat is equal to
+                the the proportion of that species' strength relevant to the sum of
+                all contesting species' strengths
+                */
+                double competitiveSum = 0;
+
+                for (Species s : contestingSpecies) {
+                    competitiveSum += s.strength;
+                }
+
+                //find a number between 0 and competitiveSum
+                double competitiveVal = Util.getRandom().nextDouble() * competitiveSum;
+
+                //determine what 'range' this random number falls into relative to the competitive sum
+                double runningSum = 0;
+                for (Species s : contestingSpecies) {
+                    if(competitiveVal <= s.strength + runningSum){
+                        //this is the winning species
+                        inhabit(s);
+                        return;
+                    }
+                    runningSum += s.strength;
+                }
+            }
+            case OCCUPIED -> {
+                uninhabit(State.FREE);
+            }
+        }
+        contestingSpecies.clear();
+    }
+
     public Organism getInhabitant(){
         return inhabitant;
+    }
+
+    public State getState(){
+        return state;
     }
 
     public void setUpdateEvent(UpdateEvent updateEvent){
@@ -54,9 +115,7 @@ public class Tile {
     }
 
     private void update(){
-        if(updateEvent != null){
-            updateEvent.onUpdate();
-        }
+        if(updateEvent != null) updateEvent.onUpdate();
     }
 
     public Set<Tile> getNeighbors (){

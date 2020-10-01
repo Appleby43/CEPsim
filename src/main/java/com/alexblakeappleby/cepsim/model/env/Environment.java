@@ -1,5 +1,6 @@
 package com.alexblakeappleby.cepsim.model.env;
 
+import com.alexblakeappleby.cepsim.model.species.Organism;
 import com.alexblakeappleby.cepsim.model.species.Species;
 
 import java.util.*;
@@ -12,6 +13,7 @@ public class Environment {
      */
     public final int size;
     public final int tileCount;
+    private int time = 0;
 
     //tile is assembled as (y, x) to make construction more intuitive
     //when indexing, use getTile(x, y) for readability
@@ -79,6 +81,31 @@ public class Environment {
                 index++;
             }
         }
+    }
+    
+    public void progress(){
+        time++;
+
+        for (Species s : Species.getSpecies()) {
+            for (Organism o : s.getOrganisms()) {
+                o.progress();
+            }
+            s.progress();
+        }
+
+        for (Tile[] arr : tiles) {
+            for (Tile t : arr) {
+                t.progress();
+            }
+        }
+    }
+
+    public void populateCorners() {
+        Species s1 = new Species(0.48);
+        Species s2 = new Species(0.5);
+
+        getTile(0, size - 1).inhabit(s1);
+        getTile(size - 1, 0).inhabit(s2);
     }
 
     private void makeNeighborPair(Tile t0, Tile t1) {

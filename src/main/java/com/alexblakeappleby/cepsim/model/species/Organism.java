@@ -11,4 +11,10 @@ public class Organism {
         this.habitat = habitat;
         species.addOrganism(this);
     }
+
+    public void progress() {
+        for (Tile t : habitat.getNeighbors()) {
+            t.contest(this);
+        }
+    }
 }
