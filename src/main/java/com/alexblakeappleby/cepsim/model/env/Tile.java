@@ -53,7 +53,9 @@ public class Tile {
     }
 
     public void contest(Organism o){
-        contestingSpecies.add(o.species);
+        if (!contestingSpecies.contains(o.species)){
+            contestingSpecies.add(o.species);
+        }
     }
 
     /**

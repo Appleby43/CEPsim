@@ -8,7 +8,7 @@ public class Util {
     /**
      * For testing, set random to a particular seeded value for determinism.
      */
-    private void setRandom(){
+    public static void setRandom(){
         random = new Random(0);
     }
 

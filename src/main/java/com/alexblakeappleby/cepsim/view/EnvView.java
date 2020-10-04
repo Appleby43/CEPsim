@@ -10,7 +10,7 @@ import javafx.scene.layout.HBox;
  * @see Environment
  */
 public class EnvView extends Group {
-    private static final int SPACING = 3;
+    private static final int SPACING = 1;
     private Environment environment;
 
     public EnvView(Environment environment) {

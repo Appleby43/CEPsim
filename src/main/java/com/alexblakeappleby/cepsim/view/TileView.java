@@ -1,18 +1,24 @@
 package com.alexblakeappleby.cepsim.view;
 
 import com.alexblakeappleby.cepsim.model.env.Tile;
-import com.alexblakeappleby.cepsim.model.species.Species;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static java.lang.Math.*;
 
 public class TileView extends Polygon {
     private Tile tile;
-    public static final double RADIUS = 10;
+    public static final double RADIUS = 3;
     private static final Color UNOCCUPIED_FILL = Color.GAINSBORO;
+
+    /*protected 4 testing*/ static List<TileView> tileViews = new ArrayList<>();
 
     public TileView(Tile tile) {
         this.tile = tile;
+        tileViews.add(this);
 
         tile.setUpdateEvent(this::onUpdate);
 
@@ -39,9 +45,14 @@ public class TileView extends Polygon {
         });
     }
 
+    /*protected 4 testing*/ Tile getTile(){
+        return tile;
+    }
+
     private void onUpdate(){
         Tile.State state = tile.getState();
         Color fillColor;
+
         switch (state){
             case FREE, REGENERATING -> {
                 fillColor = UNOCCUPIED_FILL;

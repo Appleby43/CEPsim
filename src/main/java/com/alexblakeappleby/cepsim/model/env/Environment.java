@@ -18,9 +18,20 @@ public class Environment {
     //tile is assembled as (y, x) to make construction more intuitive
     //when indexing, use getTile(x, y) for readability
     private final Tile[][] tiles;
+    public final Species[] species;
 
-    public Environment(int size) {
+    public int getTime() {
+        return time;
+    }
+
+    public enum Mode {
+        SQUARE,
+        TOROIDAL
+    }
+
+    public Environment(int size, Mode mode, Species... species) {
         this.size = size;
+        this.species = species;
         tileCount = size * size;
 
         tiles = new Tile[size][size];
@@ -51,6 +62,31 @@ public class Environment {
                 }
             }
         }
+
+        if(mode == Mode.TOROIDAL){
+            int maxIndex = size - 1;
+            for (int i = 0; i < size; i++) {
+                //create neighbor pairs between top and bottom edges
+                makeNeighborPair(getTile(i, 0), getTile(i, maxIndex));
+
+                if(i != maxIndex){
+                    //add the tile up and to the left for top tiles (vice versa)
+                    makeNeighborPair(getTile(i, 0), getTile(i + 1, maxIndex));
+                }
+
+                //create neighbor pairs between left and right edges
+                makeNeighborPair(getTile(0, i), getTile(maxIndex, i));
+
+                if(i != 0){
+                    //add the tile down and to the right for the left tiles(vice versa)
+                    makeNeighborPair(getTile(0, i), getTile(maxIndex,  i - 1));
+                }
+            }
+        }
+    }
+
+    public Environment(int size, Species... species) {
+        this(size, Mode.SQUARE, species);
     }
 
     /**
@@ -58,7 +94,7 @@ public class Environment {
      * 50 percent of the grid will be empty. The other 50 percent will be populated by
      * an equal distribution of the specified species.
      */
-    public void populateRandomly(Species... species){
+    public void populateRandomly(){
         int emptyTiles = (int) Math.ceil(tileCount / 2.0);
         //integer division floors rounding, so emptyTiles may be larger than specified
         int speciesPer = (tileCount - emptyTiles) / 2;
@@ -101,8 +137,8 @@ public class Environment {
     }
 
     public void populateCorners() {
-        Species s1 = new Species(0.48);
-        Species s2 = new Species(0.5);
+        Species s1 = species[0];
+        Species s2 = species[1];
 
         getTile(0, size - 1).inhabit(s1);
         getTile(size - 1, 0).inhabit(s2);

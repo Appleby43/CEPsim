@@ -1,9 +1,12 @@
 package com.alexblakeappleby.cepsim.model.env;
 
 import com.alexblakeappleby.cepsim.model.species.Species;
+import com.alexblakeappleby.cepsim.util.Util;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -50,14 +53,64 @@ public class EnvironmentTest {
 
     @Test
     public void testPopulateEnvironment() {
-        Environment environment = new Environment(10);
-        assertEquals(environment.tileCount, 100);
-
         Species s1 = new Species(1), s2 = new Species(1);
 
-        environment.populateRandomly(s1, s2);
+        Environment environment = new Environment(10, s1, s2);
+
+        assertEquals(environment.tileCount, 100);
+
+
+        environment.populateRandomly();
 
         assertEquals(s1.populationCount(), 25);
         assertEquals(s2.populationCount(), 25);
+    }
+
+    @Test
+    public void testTorus() {
+        Environment environment = new Environment(6, Environment.Mode.TOROIDAL);
+
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                assertEquals(6, environment.getTile(i, j).getNeighbors().size());
+            }
+        }
+    }
+
+    @Test
+    public void testContinuity() {
+        //make the test deterministic
+        Util.setRandom();
+
+        Environment e = new Environment(50, new Species(0.5), new Species(0.5));
+        e.populateRandomly();
+
+        //do this a few times to fully populate the grid ig
+        e.progress();
+        e.progress();
+        e.progress();
+
+        Map<Tile, Tile.State> map = new HashMap<>();
+
+        for (int i = 0; i < e.size; i++) {
+            for (int j = 0; j < e.size; j++) {
+                Tile t = e.getTile(i,j);
+
+                map.put(t, t.getState());
+            }
+        }
+
+        //after progressing one time val, no tiles should have the same state as previous.
+        e.progress();
+
+        for (int i = 0; i < e.size; i++) {
+            for (int j = 0; j < e.size; j++) {
+                Tile t = e.getTile(i,j);
+                Tile.State previousState = map.get(t);
+
+                assertNotEquals(previousState, t.getState());
+            }
+        }
+
     }
 }
