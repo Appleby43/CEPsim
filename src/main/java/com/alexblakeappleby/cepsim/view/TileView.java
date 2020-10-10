@@ -20,7 +20,7 @@ public class TileView extends Polygon {
         this.tile = tile;
         tileViews.add(this);
 
-        tile.setUpdateEvent(this::onUpdate);
+        tile.setProgressEvent(this::onUpdate);
 
         getPoints().addAll(//starts at 0 radians, goes CCW around 360 degrees
                 RADIUS * cos(PI / 6.0),  RADIUS * sin(PI / 6.0),

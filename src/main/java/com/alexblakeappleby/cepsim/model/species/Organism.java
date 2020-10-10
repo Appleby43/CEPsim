@@ -1,8 +1,9 @@
 package com.alexblakeappleby.cepsim.model.species;
 
+import com.alexblakeappleby.cepsim.model.env.ProgressableElement;
 import com.alexblakeappleby.cepsim.model.env.Tile;
 
-public class Organism {
+public class Organism extends ProgressableElement {
     public final Species species;
     public final Tile habitat;
 
@@ -12,7 +13,7 @@ public class Organism {
         species.addOrganism(this);
     }
 
-    public void progress() {
+    public void internalProgress() {
         for (Tile t : habitat.getNeighbors()) {
             t.contest(this);
         }

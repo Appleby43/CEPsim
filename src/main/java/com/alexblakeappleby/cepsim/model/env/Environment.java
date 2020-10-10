@@ -5,7 +5,7 @@ import com.alexblakeappleby.cepsim.model.species.Species;
 
 import java.util.*;
 
-public class Environment {
+public class Environment extends ProgressableElement{
 
     /**
      * The one-dimensional size of the environment.
@@ -19,6 +19,7 @@ public class Environment {
     //when indexing, use getTile(x, y) for readability
     private final Tile[][] tiles;
     public final Species[] species;
+    private List<ProgressableElement> extraProgessables = new ArrayList<>();
 
     public int getTime() {
         return time;
@@ -118,11 +119,14 @@ public class Environment {
             }
         }
     }
-    
-    public void progress(){
+
+    @Override
+    public void internalProgress(){
         time++;
 
-        for (Species s : Species.getSpecies()) {
+        //these things must be progressed in this order
+        //todo make a nicer process where objects are generalized as ProgressableElements
+        for (Species s : species) {
             for (Organism o : s.getOrganisms()) {
                 o.progress();
             }
@@ -134,6 +138,8 @@ public class Environment {
                 t.progress();
             }
         }
+
+        extraProgessables.forEach(ProgressableElement::progress);
     }
 
     public void populateCorners() {
@@ -144,9 +150,23 @@ public class Environment {
         getTile(size - 1, 0).inhabit(s2);
     }
 
+    public boolean isCoexisting(){
+        for (Species s : species) {
+            if (s.populationCount() == 0) return false;
+        }
+        return true;
+    }
+
     private void makeNeighborPair(Tile t0, Tile t1) {
         t0.addNeighbor(t1);
         t1.addNeighbor(t0);
+    }
+
+    /**
+     * Adds a ProgressableElement to the environment that is progress()ed with the environment.
+     */
+    public void addProgressable(ProgressableElement progressable){
+        extraProgessables.add(progressable);
     }
 
     public Tile getTile(int x, int y){

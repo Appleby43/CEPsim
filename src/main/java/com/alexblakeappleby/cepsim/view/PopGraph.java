@@ -1,30 +1,31 @@
 package com.alexblakeappleby.cepsim.view;
 
 import com.alexblakeappleby.cepsim.model.env.Environment;
+import com.alexblakeappleby.cepsim.model.env.ProgressableElement;
 import com.alexblakeappleby.cepsim.model.species.Species;
 import javafx.scene.Node;
-import javafx.scene.chart.Axis;
+import javafx.scene.Parent;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * A graph of the population of species on the grid.
  */
-public class PopGraph extends LineChart<Number, Number> {
+public class PopGraph extends ProgressableElement {
     private final Environment environment;
+
+    private LineChart<Number, Number> chart;
 
     Map<Species, XYChart.Series<Number, Number>> seriesMap = new HashMap<>();
 
     public PopGraph(Environment environment) {
-        super(new NumberAxis(), new NumberAxis());
+        chart = new LineChart<Number, Number>(new NumberAxis(), new NumberAxis());
         this.environment = environment;
         Species[] envSpecies = environment.species;
 
@@ -35,17 +36,20 @@ public class PopGraph extends LineChart<Number, Number> {
 
             seriesMap.put(species, series);
 
-            getData().add(series);
+            chart.getData().add(series);
 
-            Node seriesNode = lookup(".series" + i);
+            Node seriesNode = chart.lookup(".series" + i);
             Color color = ColorRegistry.getSpeciesColor(i);
 
             seriesNode.setStyle("-fx-stroke: rgb(" + color.getRed() * 255 + ", " + color.getGreen() * 255 + ", " + color.getBlue() * 255 + ")");
         }
-
     }
 
-    public void progress(){
+    public Parent getGraphics(){
+        return chart;
+    }
+
+    public void internalProgress(){
         for (Species s : environment.species) {
             XYChart.Series<Number, Number> series = seriesMap.get(s);
 

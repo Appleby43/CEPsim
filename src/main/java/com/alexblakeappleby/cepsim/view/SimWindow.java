@@ -5,32 +5,33 @@ import com.alexblakeappleby.cepsim.model.species.Species;
 import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class MainWindow {
+/**
+ * A window to display a single cepsim
+ */
+public class SimWindow {
     public static void launch(){
         Stage stage = new Stage();
-        Environment environment = new Environment(50, Environment.Mode.TOROIDAL, new Species(.4), new Species(.6));
+        Environment environment = new Environment(50, Environment.Mode.TOROIDAL, new Species(.6), new Species(.4));
         EnvView envView = new EnvView(environment);
 
         PopGraph popGraph = new PopGraph(environment);
+        environment.addProgressable(popGraph);
 
         environment.populateRandomly();
         //environment.populateCorners();
         popGraph.progress();
 
         VBox vBox = new VBox();
-        vBox.getChildren().addAll(popGraph, envView);
+        vBox.getChildren().addAll(popGraph.getGraphics(), envView);
 
         Scene scene = new Scene(vBox);
 
         scene.setOnKeyPressed(e -> {
             if(e.getCode() == KeyCode.SPACE){
                 environment.progress();
-                popGraph.progress();
             }
         });
 

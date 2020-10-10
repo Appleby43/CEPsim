@@ -1,6 +1,7 @@
 package com.alexblakeappleby.cepsim.util;
 
-import com.alexblakeappleby.cepsim.view.MainWindow;
+import com.alexblakeappleby.cepsim.controller.StartWindow;
+import com.alexblakeappleby.cepsim.view.SimWindow;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -11,7 +12,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        MainWindow.launch();
+        StartWindow.launch();
     }
 
     public static void main(String[] args) {

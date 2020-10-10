@@ -2,7 +2,6 @@ package com.alexblakeappleby.cepsim.model.env;
 
 import com.alexblakeappleby.cepsim.model.species.Organism;
 import com.alexblakeappleby.cepsim.model.species.Species;
-import com.alexblakeappleby.cepsim.util.UpdateEvent;
 import com.alexblakeappleby.cepsim.util.Util;
 
 import java.util.*;
@@ -11,12 +10,12 @@ import java.util.*;
  * A tile is one 'microhabitat' that makes up a larger environment.
  * Each tile can only contain one organism.
  */
-public class Tile {
+public class Tile extends ProgressableElement{
     private State state = State.FREE;
     private Organism inhabitant = null;
     private Set<Tile> neighbors = new HashSet<>();
 
-    private UpdateEvent updateEvent;
+    private ProgressEvent progressEvent;
     private List<Species> contestingSpecies = new ArrayList<>();
 
     public final int x, y;
@@ -60,9 +59,9 @@ public class Tile {
 
     /**
      * Called when time progresses one unit.
-     * contestingSpecies should be populated upon invokation.
+     * contestingSpecies should be populated upon invocation.
      */
-    public void progress() {
+    public void internalProgress() {
         switch (state){
             case FREE, REGENERATING -> {
                 if(contestingSpecies.size() == 0) {
@@ -112,12 +111,8 @@ public class Tile {
         return state;
     }
 
-    public void setUpdateEvent(UpdateEvent updateEvent){
-        this.updateEvent = updateEvent;
-    }
-
     private void update(){
-        if(updateEvent != null) updateEvent.onUpdate();
+        if(progressEvent != null) progressEvent.onProgress();
     }
 
     public Set<Tile> getNeighbors (){

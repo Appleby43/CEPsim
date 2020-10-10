@@ -4,7 +4,7 @@
     <module name="CEPsim.main" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.alexblakeappleby.cepsim.util.*" />
+        <option name="PATTERN" value="com.alexblakeappleby.cepsim.model.env.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
